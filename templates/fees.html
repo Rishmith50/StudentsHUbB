@@ -1,0 +1,242 @@
+{% extends "base.html" %}
+
+{% block title %}Fee Finances | StudentHub{% endblock %}
+
+{% block content %}
+
+    <div class="page-header">
+        <div class="page-header-content">
+            <h1><span class="title-badge">💰</span> Tuition & Fee Management</h1>
+            <p>Monitor collection targets, inspect outstanding balances, and record payments</p>
+        </div>
+        <div>
+            <a class="btn btn-secondary btn-sm" href="/export/fees.csv?status={{ selected_status }}">
+                📥 Export Ledger CSV
+            </a>
+        </div>
+    </div>
+
+    <!-- Fee Financial Summary Cards -->
+    <section class="stat-cards">
+
+        <div class="stat-card">
+            <div class="card-icon purple">💳</div>
+            <div class="card-value" data-countup="{{ total_fees }}" data-prefix="₹">₹0</div>
+            <div class="card-label">Total Assigned Tuition</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="card-icon green">✅</div>
+            <div class="card-value" data-countup="{{ collected }}" data-prefix="₹" style="color:var(--lime);">₹0</div>
+            <div class="card-label">Collected Revenue</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="card-icon pink">⏳</div>
+            <div class="card-value" data-countup="{{ pending }}" data-prefix="₹" style="color:#fbbf24;">₹0</div>
+            <div class="card-label">Pending Receivable</div>
+        </div>
+
+    </section>
+
+    <!-- Fee Financial Doughnut Charts -->
+    <section class="charts-grid" style="margin-bottom: 28px;">
+
+        <div class="chart-card">
+            <h3><span class="chart-icon">📊</span> Collection vs Pending Ratio</h3>
+            <div class="chart-container">
+                <canvas id="feeCollectionPie"
+                    data-collected="{{ collected }}"
+                    data-pending="{{ pending }}"></canvas>
+                <div id="feeCollectionNoData" class="empty" style="display:none; padding: 40px 10px;">
+                    No financial data available.
+                </div>
+            </div>
+        </div>
+
+        <div class="chart-card">
+            <h3><span class="chart-icon">🎯</span> Payment Status Breakdown</h3>
+            <div class="chart-container">
+                <canvas id="feeStatusPie"
+                    data-paid="{{ paid_count }}"
+                    data-partial="{{ partial_count }}"
+                    data-pending="{{ pending_count }}"></canvas>
+                <div id="feeStatusNoData" class="empty" style="display:none; padding: 40px 10px;">
+                    No student fee records found.
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- Fee Records Ledger Table -->
+    <div class="glass-panel">
+
+        <div class="panel-header">
+            <h2><span class="header-icon">📄</span> Fee Ledger & Transactions</h2>
+            <form method="GET" action="/fees" class="filters" style="margin-bottom:0;">
+                <select name="status">
+                    <option value="">All Payment Statuses</option>
+                    <option value="Paid" {% if selected_status == 'Paid' %}selected{% endif %}>Paid</option>
+                    <option value="Partial" {% if selected_status == 'Partial' %}selected{% endif %}>Partial</option>
+                    <option value="Pending" {% if selected_status == 'Pending' %}selected{% endif %}>Pending</option>
+                </select>
+                <button type="submit" class="btn btn-primary btn-sm">Filter</button>
+                {% if selected_status %}
+                <a href="/fees" class="btn btn-ghost btn-sm">Clear</a>
+                {% endif %}
+            </form>
+        </div>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Student Name</th>
+                        <th>Program</th>
+                        <th>Total Fee</th>
+                        <th>Paid</th>
+                        <th>Pending</th>
+                        <th>Status</th>
+                        <th>Last Payment</th>
+                        <th>Record Payment</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in rows %}
+                    <tr>
+                        <td><strong style="color:var(--lime);">#{{ r.id }}</strong></td>
+                        <td><span style="font-weight:700; color:var(--text-white);">{{ r.name }}</span></td>
+                        <td>{{ r.course }}</td>
+                        <td>₹{{ "{:,.0f}".format(r.total_fee) }}</td>
+                        <td style="color:var(--lime); font-weight:700;">₹{{ "{:,.0f}".format(r.amount_paid) }}</td>
+                        <td style="font-weight:600;">
+                            {% if r.pending > 0 %}
+                            <span style="color:#ef4444;">₹{{ "{:,.0f}".format(r.pending) }}</span>
+                            {% else %}
+                            <span style="color:var(--text-dim);">₹{{ "{:,.0f}".format(r.pending) }}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <span class="badge {{ r.fee_status|lower }}">{{ r.fee_status }}</span>
+                        </td>
+                        <td style="color:var(--text-muted); font-size:13px;">
+                            {{ r.last_payment_date.strftime('%d %b %Y') if r.last_payment_date else '—' }}
+                        </td>
+                        <td>
+                            {% if r.fee_status == 'Paid' or r.pending <= 0 %}
+                                <span style="color:var(--lime); font-size:13px; font-weight:700;">✓ Settled</span>
+                            {% else %}
+                            <form method="POST" action="/fees/pay/{{ r.id }}" class="pay-form">
+                                <input type="number" name="amount" min="1" step="1"
+                                    max="{{ r.pending|int }}" placeholder="₹ Amt" required>
+                                <button type="submit">Pay</button>
+                            </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="9" class="empty">No student records match filter.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    (function () {
+        const sharedOpts = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        color: '#a1a1aa',
+                        font: { size: 12, family: 'Plus Jakarta Sans', weight: '600' },
+                        padding: 14,
+                        usePointStyle: true,
+                        pointStyleWidth: 10,
+                    }
+                },
+                tooltip: {
+                    backgroundColor: '#121216',
+                    titleColor: '#ffffff',
+                    bodyColor: '#b8f400',
+                    borderColor: 'rgba(184, 244, 0, 0.3)',
+                    borderWidth: 1,
+                    cornerRadius: 8,
+                    padding: 12,
+                    titleFont: { weight: '700', family: 'Plus Jakarta Sans' },
+                    bodyFont: { weight: '600', family: 'Plus Jakarta Sans' },
+                }
+            },
+            cutout: '68%',
+        };
+
+        // ── Collection vs Pending ──
+        const collCanvas = document.getElementById('feeCollectionPie');
+        const collNoData = document.getElementById('feeCollectionNoData');
+        const collected = collCanvas ? parseFloat(collCanvas.dataset.collected || '0') : 0;
+        const pending = collCanvas ? parseFloat(collCanvas.dataset.pending || '0') : 0;
+
+        if (collected + pending > 0 && collCanvas) {
+            new Chart(collCanvas, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Collected Revenue', 'Pending Balance'],
+                    datasets: [{
+                        data: [collected, pending],
+                        backgroundColor: ['rgba(184, 244, 0, 0.95)', 'rgba(239, 68, 68, 0.85)'],
+                        borderColor: '#131317',
+                        borderWidth: 3,
+                        hoverOffset: 6,
+                    }]
+                },
+                options: sharedOpts,
+            });
+        } else {
+            if (collCanvas) collCanvas.style.display = 'none';
+            if (collNoData) collNoData.style.display = 'block';
+        }
+
+        // ── Fee Status Breakdown ──
+        const statusCanvas = document.getElementById('feeStatusPie');
+        const statusNoData = document.getElementById('feeStatusNoData');
+        const paidCount = statusCanvas ? parseInt(statusCanvas.dataset.paid || '0', 10) : 0;
+        const partialCount = statusCanvas ? parseInt(statusCanvas.dataset.partial || '0', 10) : 0;
+        const pendingCount = statusCanvas ? parseInt(statusCanvas.dataset.pending || '0', 10) : 0;
+
+        if (paidCount + partialCount + pendingCount > 0 && statusCanvas) {
+            new Chart(statusCanvas, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Fully Paid', 'Partially Paid', 'Pending'],
+                    datasets: [{
+                        data: [paidCount, partialCount, pendingCount],
+                        backgroundColor: [
+                            'rgba(184, 244, 0, 0.95)',
+                            'rgba(245, 158, 11, 0.85)',
+                            'rgba(239, 68, 68, 0.85)',
+                        ],
+                        borderColor: '#131317',
+                        borderWidth: 3,
+                        hoverOffset: 6,
+                    }]
+                },
+                options: sharedOpts,
+            });
+        } else {
+            if (statusCanvas) statusCanvas.style.display = 'none';
+            if (statusNoData) statusNoData.style.display = 'block';
+        }
+    })();
+</script>
+{% endblock %}

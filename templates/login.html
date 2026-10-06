@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="StudentHub — Secure Administrator Login">
+    <title>Sign In | StudentHub</title>
+
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+
+    <div class="login-page-wrap">
+
+        <!-- Background Watermark Stacks -->
+        <div class="watermark-stack left-stack">
+            <span>STUDENT HUB</span>
+            <span>STUDENT HUB</span>
+            <span>STUDENT HUB</span>
+        </div>
+
+        <div class="watermark-stack">
+            <span>STUDENT HUB</span>
+            <span>STUDENT HUB</span>
+            <span>STUDENT HUB</span>
+        </div>
+
+        <!-- Login Card -->
+        <div class="login-box">
+
+            <div class="login-header">
+                <a href="/" class="sidebar-logo">
+                    <span class="logo-badge">●</span>
+                    <span class="logo-text">
+                        <span class="brand-main">STUDENT</span><span class="brand-dot">.</span><span class="brand-sub">HUB</span>
+                    </span>
+                </a>
+
+                <div class="login-badge">AUTHENTICATION PORTAL</div>
+                <h1 class="login-title">Welcome Back</h1>
+                <p class="login-subtitle">Enter your administrative credentials to access the academic control center</p>
+            </div>
+
+            <!-- Flashed Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% for category, message in messages %}
+                <div class="flash {{ category }}" style="margin-bottom:20px;">
+                    <span>{{ '⚠️' if category == 'error' else '✅' }}</span>
+                    <span>{{ message }}</span>
+                </div>
+                {% endfor %}
+            {% endwith %}
+
+            {% if session.get('username') %}
+            <div class="note" style="margin-bottom: 20px; display:flex; align-items:center; justify-content:space-between; font-size:13px;">
+                <span>Active session: <strong style="color:var(--lime);">{{ session.get('username') }}</strong></span>
+                <a href="/" style="color:var(--lime); text-decoration:none; font-weight:700;">Dashboard →</a>
+            </div>
+            {% endif %}
+
+            <form id="loginForm" method="POST" action="/login{% if request.args.get('next') %}?next={{ request.args.get('next') }}{% endif %}">
+
+                <div class="field" style="margin-bottom:18px;">
+                    <label for="username">Username or ID</label>
+                    <div class="input-icon-group">
+                        <span class="input-icon">👤</span>
+                        <input
+                            type="text"
+                            id="username"
+                            name="username"
+                            value="{{ username or '' }}"
+                            placeholder="Enter your username"
+                            required
+                            autofocus
+                        >
+                    </div>
+                </div>
+
+                <div class="field" style="margin-bottom:24px;">
+                    <label for="password">Password</label>
+                    <div class="input-icon-group">
+                        <span class="input-icon">🔒</span>
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Enter your password"
+                            required
+                        >
+                        <button type="button" class="toggle-pwd-btn" id="togglePasswordBtn" title="Show/Hide Password">
+                            👁️
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-hero btn-lg" style="width:100%; border-radius:var(--radius-sm);">
+                    Sign In to Dashboard →
+                </button>
+
+            </form>
+
+            <div style="text-align:center; margin-top:24px; font-size:12px; color:var(--text-dim);">
+                StudentHub &copy; 2026 &middot; Institutional Operating System
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        // Password Visibility Toggle
+        const toggleBtn = document.getElementById('togglePasswordBtn');
+        const passwordInput = document.getElementById('password');
+        const loginForm = document.getElementById('loginForm');
+
+        if (toggleBtn && passwordInput) {
+            toggleBtn.addEventListener('click', function () {
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    toggleBtn.textContent = '🙈';
+                } else {
+                    passwordInput.type = 'password';
+                    toggleBtn.textContent = '👁️';
+                }
+            });
+        }
+
+        // Store active session token in sessionStorage (destroyed on browser close)
+        if (loginForm) {
+            loginForm.addEventListener('submit', function () {
+                sessionStorage.setItem('studenthub_session_active', '1');
+            });
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="StudentHub — Modern Student Management Platform">
+
+    <title>{% block title %}StudentHub{% endblock %}</title>
+
+    <link rel="stylesheet" href="/static/style.css">
+
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+
+</head>
+
+<body data-authenticated="{{ 'true' if session.get('user_id') else 'false' }}">
+
+    <div class="app-layout">
+
+        <!-- ===== SIDEBAR ===== -->
+        <aside class="sidebar" id="sidebar">
+
+            <div class="sidebar-header">
+                <a href="/" class="sidebar-logo">
+                    <span class="logo-badge">●</span>
+                    <span class="logo-text">
+                        <span class="brand-main">STUDENT</span><span class="brand-dot">.</span><span class="brand-sub">HUB</span>
+                    </span>
+                </a>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="/">
+                    <span class="nav-icon">📊</span> Dashboard
+                </a>
+                <a href="/students">
+                    <span class="nav-icon">👥</span> Students
+                </a>
+                <a href="/add_students">
+                    <span class="nav-icon">➕</span> Add Student
+                </a>
+                <a href="/attendance">
+                    <span class="nav-icon">📋</span> Attendance
+                </a>
+                <a href="/fees">
+                    <span class="nav-icon">💰</span> Fees
+                </a>
+                <a href="/about">
+                    <span class="nav-icon">ℹ️</span> About
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                {% if session.get('username') %}
+                <div style="display:flex; flex-direction:column; gap:4px; width:100%;">
+                    <div style="display:flex; align-items:center; justify-content:space-between;">
+                        <span class="status-indicator">
+                            <span class="status-dot"></span> {{ session.get('username') }}
+                        </span>
+                        <a href="/logout" style="color:var(--text-muted); font-size:11px; text-decoration:none;">Sign Out</a>
+                    </div>
+                    <div style="font-size:11px; color:var(--text-dim);">StudentHub &copy; 2026</div>
+                </div>
+                {% else %}
+                <span>StudentHub &copy; 2026</span>
+                <a href="/login" class="status-indicator" style="text-decoration:none;">
+                    <span class="status-dot"></span> Sign In
+                </a>
+                {% endif %}
+            </div>
+
+        </aside>
+
+        <!-- Overlay for mobile sidebar -->
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+        <!-- ===== MAIN CONTENT ===== -->
+        <div class="main-content">
+
+            <!-- Mobile Header -->
+            <header class="mobile-header">
+                <a href="/" class="sidebar-logo">
+                    <span class="logo-badge">●</span>
+                    <span class="logo-text">
+                        <span class="brand-main">STUDENT</span><span class="brand-dot">.</span><span class="brand-sub">HUB</span>
+                    </span>
+                </a>
+                <div style="display:flex; align-items:center; gap:8px;">
+                    {% if session.get('username') %}
+                    <a href="/logout" class="btn-nav-action" style="padding:6px 10px; font-size:11px;">🚪</a>
+                    {% else %}
+                    <a href="/login" class="btn-nav-action" style="padding:6px 10px; font-size:11px;">🔑</a>
+                    {% endif %}
+                    <button class="nav-toggle" aria-label="Toggle navigation">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Desktop Persistent Topbar (Matching Template Header) -->
+            <header class="app-topbar">
+                <div class="topbar-left">
+                    <div class="topbar-title">
+                        <span>●</span> Academic Operating System
+                    </div>
+                </div>
+
+                <nav class="topbar-nav">
+                    <a href="/">Home</a>
+                    <a href="/students">Directory</a>
+                    <a href="/attendance">Attendance</a>
+                    <a href="/fees">Finances</a>
+                    <a href="/about">About</a>
+                </nav>
+
+                <div class="topbar-right">
+                    <a href="/add_students" class="btn-nav-action">
+                        <span>➕</span> New Student
+                    </a>
+
+                    {% if session.get('username') %}
+                    <div class="user-profile-pill">
+                        <span class="user-status-dot"></span>
+                        <span>{{ session.get('username') }}</span>
+                        <span class="user-role-badge">{{ session.get('role', 'admin')|upper }}</span>
+                    </div>
+                    <a href="/logout" class="btn-nav-action" title="Sign Out">
+                        <span>🚪</span> Sign Out
+                    </a>
+                    {% else %}
+                    <a href="/login" class="btn-nav-action" style="background:var(--lime); color:#000000; font-weight:800;">
+                        <span>🔑</span> Sign In
+                    </a>
+                    {% endif %}
+                </div>
+            </header>
+
+            <div class="container">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% for category, message in messages %}
+                    <div class="flash {{ category }}">
+                        <span>{{ '✅' if category == 'success' else '⚠️' }}</span>
+                        <span>{{ message }}</span>
+                    </div>
+                    {% endfor %}
+                {% endwith %}
+
+                {% block content %}{% endblock %}
+            </div>
+
+            <footer>
+                <p>StudentHub &copy; 2026 &middot; Modern Student Management &middot; Dark & Neon Theme</p>
+                <div style="display:flex; gap:16px;">
+                    <a href="/">Dashboard</a>
+                    <a href="/students">Students</a>
+                    <a href="/fees">Fees</a>
+                    <a href="/about">About</a>
+                </div>
+            </footer>
+
+        </div>
+
+    </div>
+
+    <script src="/static/script.js"></script>
+    {% block scripts %}{% endblock %}
+
+</body>
+</html>

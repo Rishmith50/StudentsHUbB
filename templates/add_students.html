@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}{{ form_title }} | StudentHub{% endblock %}
+
+{% block content %}
+
+    <div class="page-header">
+        <div class="page-header-content">
+            <h1><span class="title-badge">➕</span> {{ form_title }}</h1>
+            <p>Fill in student credentials and academic assignment to register</p>
+        </div>
+        <div>
+            <a href="/students" class="btn btn-secondary btn-sm">
+                ← Back to Directory
+            </a>
+        </div>
+    </div>
+
+    <div class="glass-panel">
+
+        <form method="POST" action="">
+
+            <div class="form-grid">
+
+                <div class="field">
+                    <label for="name">Full Name *</label>
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        value="{{ student.name if student else '' }}"
+                        placeholder="e.g. Alex Morgan"
+                        required
+                    >
+                </div>
+
+                <div class="field">
+                    <label for="email">Email Address *</label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        value="{{ student.email if student else '' }}"
+                        placeholder="alex.morgan@university.edu"
+                        required
+                    >
+                </div>
+
+                <div class="field">
+                    <label for="phone">Phone Number</label>
+                    <input
+                        type="text"
+                        id="phone"
+                        name="phone"
+                        value="{{ student.phone if student and student.phone else '' }}"
+                        placeholder="+91 98765 43210"
+                    >
+                </div>
+
+                <div class="field">
+                    <label for="gender">Gender</label>
+                    <select id="gender" name="gender">
+                        <option value="Male" {% if student and student.gender == 'Male' %}selected{% endif %}>Male</option>
+                        <option value="Female" {% if student and student.gender == 'Female' %}selected{% endif %}>Female</option>
+                        <option value="Other" {% if student and student.gender == 'Other' %}selected{% endif %}>Other</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="course_id">Degree / Program *</label>
+                    <select id="course_id" name="course_id" required>
+                        <option value="">Select Enrolled Program</option>
+                        {% for course in courses %}
+                        <option
+                            value="{{ course.id }}"
+                            {% if student and student.course_id|string == course.id|string %}selected{% endif %}
+                        >
+                            {{ course.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="date_of_birth">Date of Birth</label>
+                    <input
+                        type="date"
+                        id="date_of_birth"
+                        name="date_of_birth"
+                        value="{{ student.date_of_birth if student and student.date_of_birth else '' }}"
+                    >
+                </div>
+
+                <div class="field">
+                    <label for="status">Enrollment Status</label>
+                    <select id="status" name="status">
+                        <option value="Active" {% if not student or student.status == 'Active' %}selected{% endif %}>Active</option>
+                        <option value="Inactive" {% if student and student.status == 'Inactive' %}selected{% endif %}>Inactive</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <div style="display:flex; align-items:center; gap:14px; padding-top:10px; border-top:1px solid var(--border);">
+                <button type="submit" class="btn btn-primary">
+                    💾 Save Student Record
+                </button>
+                <a href="/students" class="btn btn-ghost">Cancel</a>
+            </div>
+
+        </form>
+
+    </div>
+
+{% endblock %}

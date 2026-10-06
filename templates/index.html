@@ -1,0 +1,297 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard | StudentHub{% endblock %}
+
+{% block content %}
+
+    <!-- ===== HERO BANNER TEMPLATE (MATCHING THE E-COMMERCE UI) ===== -->
+    <section class="banner-hero-container">
+
+        <!-- Background Watermark Outline Elements -->
+        <div class="watermark-stack">
+            <span>STUDENT HUB</span>
+            <span>STUDENT HUB</span>
+            <span>STUDENT HUB</span>
+        </div>
+
+        <!-- Left: Photo Card with Circular Rotating Badge -->
+        <div class="hero-photo-wrapper">
+            <div class="hero-photo-card">
+                <img src="/static/hero_students.jpg" alt="Students studying with laptop" loading="eager">
+
+                <div class="hero-photo-caption">
+                    <p>Empowering educational workflows with real-time student monitoring, automated attendance, and unified finances.</p>
+                </div>
+            </div>
+
+            <!-- Circular Rotating Text Badge Overlapping Top Right -->
+            <div class="rotating-badge-wrapper">
+                <svg class="rotating-svg" viewBox="0 0 100 100">
+                    <defs>
+                        <path id="badgeCirclePath" d="M 50, 50 m -36, 0 a 36,36 0 1,1 72,0 a 36,36 0 1,1 -72,0" />
+                    </defs>
+                    <text>
+                        <textPath href="#badgeCirclePath" startOffset="0%">
+                            ● SMART CAMPUS ● 2026 ● STUDENT.HUB ● EXCELLENCE
+                        </textPath>
+                    </text>
+                </svg>
+                <div class="rotating-badge-center-dot"></div>
+            </div>
+        </div>
+
+        <!-- Right: Bold Neon Lime Headline & CTA -->
+        <div class="hero-text-content">
+            <div class="hero-tagline">
+                <span class="tag-pill">CAMPUS SUITE</span> ACADEMIC CONTROL CENTER
+            </div>
+
+            <h1 class="hero-neon-title">
+                SMART CAMPUS!<br>
+                <span class="title-white">DON'T MISS A BEAT...</span>
+            </h1>
+
+            <p class="hero-description">
+                Elevate campus administration with instant student search, live class attendance analytics,
+                and end-to-end fee accounting — beautifully organized in a unified workspace.
+            </p>
+
+            <div class="hero-btn-row">
+                <a href="/students" class="btn btn-hero" id="welcomeButton">
+                    Browse Students →
+                </a>
+                <a href="/add_students" class="btn btn-secondary">
+                    ➕ Register Student
+                </a>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- ===== STAT CARDS ===== -->
+    <section class="stat-cards">
+
+        <div class="stat-card">
+            <div class="card-icon purple">👥</div>
+            <div class="card-value" data-countup="{{ total_students }}" data-prefix="">0</div>
+            <div class="card-label">Total Enrolled</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="card-icon green">⚡</div>
+            <div class="card-value" data-countup="{{ active_students }}" data-prefix="" style="color: var(--lime);">0</div>
+            <div class="card-label">Active Students</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="card-icon pink">⏸️</div>
+            <div class="card-value" data-countup="{{ inactive_students }}" data-prefix="">0</div>
+            <div class="card-label">Inactive Students</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="card-icon amber">📚</div>
+            <div class="card-value" data-countup="{{ total_courses }}" data-prefix="">0</div>
+            <div class="card-label">Total Programs</div>
+        </div>
+
+    </section>
+
+    <!-- ===== CHARTS GRID ===== -->
+    <section class="charts-grid">
+
+        <div class="chart-card">
+            <h3><span class="chart-icon">🎯</span> Students by Course</h3>
+            <div class="chart-container">
+                <canvas id="courseChart"
+                    data-labels='{{ course_labels | tojson }}'
+                    data-counts='{{ course_counts | tojson }}'></canvas>
+            </div>
+        </div>
+
+        <div class="chart-card">
+            <h3><span class="chart-icon">⚡</span> Active vs Inactive</h3>
+            <div class="chart-container">
+                <canvas id="statusChart"
+                    data-active="{{ active_students }}"
+                    data-inactive="{{ inactive_students }}"></canvas>
+            </div>
+        </div>
+
+        <div class="chart-card">
+            <h3><span class="chart-icon">👤</span> Gender Distribution</h3>
+            <div class="chart-container">
+                <canvas id="genderChart"
+                    data-labels='{{ gender_labels | tojson }}'
+                    data-counts='{{ gender_counts | tojson }}'></canvas>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- ===== RECENT STUDENTS TABLE ===== -->
+    <div class="glass-panel">
+
+        <div class="panel-header">
+            <h2><span class="header-icon">🕐</span> Recently Enrolled Students</h2>
+            <a href="/students" class="btn btn-secondary btn-sm">View Directory →</a>
+        </div>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Student Name</th>
+                        <th>Course / Program</th>
+                        <th>Enrollment Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in recent_students %}
+                    <tr>
+                        <td><strong style="color:var(--lime);">#{{ student.id }}</strong></td>
+                        <td><span style="font-weight:700; color:var(--text-white);">{{ student.name }}</span></td>
+                        <td>{{ student.course }}</td>
+                        <td>
+                            <span class="badge {{ 'active-badge' if student.status == 'Active' else 'inactive-badge' }}">
+                                {{ student.status }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="4" class="empty">No student records found in database.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // ── Chart Theme Colors matching Dark & Neon Lime ──
+    const themeColors = [
+        '#b8f400', // Neon Lime
+        '#ffffff', // Crisp White
+        '#38bdf8', // Sky Blue
+        '#a78bfa', // Lavender Violet
+        '#f59e0b', // Warm Amber
+        '#10b981', // Emerald
+        '#ec4899', // Hot Pink
+        '#94a3b8'  // Muted Slate
+    ];
+
+    const themeColorsBg = [
+        'rgba(184, 244, 0, 0.9)',
+        'rgba(255, 255, 255, 0.85)',
+        'rgba(56, 189, 248, 0.85)',
+        'rgba(167, 139, 250, 0.85)',
+        'rgba(245, 158, 11, 0.85)',
+        'rgba(16, 185, 129, 0.85)',
+        'rgba(236, 72, 153, 0.85)',
+        'rgba(148, 163, 184, 0.85)'
+    ];
+
+    // Shared options for all doughnut charts
+    const sharedOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'bottom',
+                labels: {
+                    color: '#a1a1aa',
+                    font: { size: 12, family: 'Plus Jakarta Sans', weight: '600' },
+                    padding: 14,
+                    usePointStyle: true,
+                    pointStyleWidth: 10,
+                }
+            },
+            tooltip: {
+                backgroundColor: '#121216',
+                titleColor: '#ffffff',
+                bodyColor: '#b8f400',
+                borderColor: 'rgba(184, 244, 0, 0.3)',
+                borderWidth: 1,
+                cornerRadius: 8,
+                padding: 12,
+                titleFont: { weight: '700', family: 'Plus Jakarta Sans' },
+                bodyFont: { weight: '600', family: 'Plus Jakarta Sans' },
+                displayColors: true
+            }
+        },
+        cutout: '68%',
+    };
+
+    // ── Students by Course (Doughnut) ──
+    const courseEl = document.getElementById('courseChart');
+    const courseLabels = courseEl ? JSON.parse(courseEl.dataset.labels || '[]') : [];
+    const courseCounts = courseEl ? JSON.parse(courseEl.dataset.counts || '[]') : [];
+
+    if (courseEl && courseLabels.length > 0) {
+        new Chart(courseEl, {
+            type: 'doughnut',
+            data: {
+                labels: courseLabels,
+                datasets: [{
+                    data: courseCounts,
+                    backgroundColor: themeColorsBg.slice(0, courseLabels.length),
+                    borderColor: '#131317',
+                    borderWidth: 3,
+                    hoverOffset: 6,
+                }]
+            },
+            options: sharedOptions,
+        });
+    }
+
+    // ── Active vs Inactive (Doughnut) ──
+    const statusEl = document.getElementById('statusChart');
+    const activeCount = statusEl ? parseInt(statusEl.dataset.active || '0', 10) : 0;
+    const inactiveCount = statusEl ? parseInt(statusEl.dataset.inactive || '0', 10) : 0;
+
+    if (statusEl && (activeCount + inactiveCount > 0)) {
+        new Chart(statusEl, {
+            type: 'doughnut',
+            data: {
+                labels: ['Active', 'Inactive'],
+                datasets: [{
+                    data: [activeCount, inactiveCount],
+                    backgroundColor: ['rgba(184, 244, 0, 0.95)', 'rgba(239, 68, 68, 0.85)'],
+                    borderColor: '#131317',
+                    borderWidth: 3,
+                    hoverOffset: 6,
+                }]
+            },
+            options: sharedOptions,
+        });
+    }
+
+    // ── Gender Distribution (Doughnut) ──
+    const genderEl = document.getElementById('genderChart');
+    const genderLabels = genderEl ? JSON.parse(genderEl.dataset.labels || '[]') : [];
+    const genderCounts = genderEl ? JSON.parse(genderEl.dataset.counts || '[]') : [];
+
+    if (genderEl && genderLabels.length > 0) {
+        new Chart(genderEl, {
+            type: 'doughnut',
+            data: {
+                labels: genderLabels,
+                datasets: [{
+                    data: genderCounts,
+                    backgroundColor: ['#b8f400', '#38bdf8', '#a78bfa'],
+                    borderColor: '#131317',
+                    borderWidth: 3,
+                    hoverOffset: 6,
+                }]
+            },
+            options: sharedOptions,
+        });
+    }
+</script>
+{% endblock %}

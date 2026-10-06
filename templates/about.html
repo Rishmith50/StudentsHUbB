@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+
+{% block title %}About Platform | StudentHub{% endblock %}
+
+{% block content %}
+
+    <!-- ===== HERO BANNER (THEME MATCHED) ===== -->
+    <section class="banner-hero-container">
+
+        <div class="watermark-stack">
+            <span>ABOUT SYSTEM</span>
+            <span>ABOUT SYSTEM</span>
+            <span>ABOUT SYSTEM</span>
+        </div>
+
+        <div class="hero-photo-wrapper">
+            <div class="hero-photo-card">
+                <img src="/static/hero_students.jpg" alt="StudentHub Architecture" loading="eager">
+                <div class="hero-photo-caption">
+                    <p>Designed for academic registrars, administrative staff, and educational directors seeking modern performance.</p>
+                </div>
+            </div>
+
+            <div class="rotating-badge-wrapper">
+                <svg class="rotating-svg" viewBox="0 0 100 100">
+                    <defs>
+                        <path id="aboutBadgeCirclePath" d="M 50, 50 m -36, 0 a 36,36 0 1,1 72,0 a 36,36 0 1,1 -72,0" />
+                    </defs>
+                    <text>
+                        <textPath href="#aboutBadgeCirclePath" startOffset="0%">
+                            ● ARCHITECTURE ● VERIFIED 2026 ● STUDENT.HUB ●
+                        </textPath>
+                    </text>
+                </svg>
+                <div class="rotating-badge-center-dot"></div>
+            </div>
+        </div>
+
+        <div class="hero-text-content">
+            <div class="hero-tagline">
+                <span class="tag-pill">SYSTEM ARCHITECTURE</span> BUILT FOR SPEED
+            </div>
+
+            <h1 class="hero-neon-title">
+                STUDENT RECORDS,<br>
+                <span class="title-white">KEPT SIMPLE.</span>
+            </h1>
+
+            <p class="hero-description">
+                StudentHub is an institutional management system that consolidates student profiles, program assignments,
+                attendance roll calls, and financial records into one frictionless interface.
+            </p>
+
+            <div class="hero-btn-row">
+                <a href="/students" class="btn btn-primary">
+                    Explore Directory →
+                </a>
+                <a href="/attendance" class="btn btn-secondary">
+                    View Attendance
+                </a>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- ===== FEATURE CARDS ===== -->
+    <section class="stat-cards">
+
+        <div class="stat-card">
+            <div class="card-icon green">📂</div>
+            <div class="card-value" style="font-size:22px;">Organized</div>
+            <div class="card-label">Instant search across student directory & program enrollments</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="card-icon green">📊</div>
+            <div class="card-value" style="font-size:22px; color:var(--lime);">Insightful</div>
+            <div class="card-label">Real-time attendance analytics & fee collection doughnuts</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="card-icon green">📱</div>
+            <div class="card-value" style="font-size:22px;">Responsive</div>
+            <div class="card-label">Engineered flawlessly across desktops, tablets, and smartphones</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="card-icon green">🔒</div>
+            <div class="card-value" style="font-size:22px;">Persistent</div>
+            <div class="card-label">Robust transactional storage backed by reliable MySQL</div>
+        </div>
+
+    </section>
+
+    <!-- ===== CAPABILITIES TABLE ===== -->
+    <div class="glass-panel">
+
+        <div class="panel-header">
+            <h2><span class="header-icon">🚀</span> System Capabilities & Core Modules</h2>
+        </div>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Module</th>
+                        <th>Operational Capability</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong style="color:var(--lime);">📊 Dashboard</strong></td>
+                        <td>High-level executive metrics, recent enrollment streams, and interactive distribution charts.</td>
+                    </tr>
+                    <tr>
+                        <td><strong style="color:var(--lime);">👥 Student Directory</strong></td>
+                        <td>Full registry lookup with multi-parameter filter by program and active status.</td>
+                    </tr>
+                    <tr>
+                        <td><strong style="color:var(--lime);">➕ Registration</strong></td>
+                        <td>Structured student onboarding capturing contact details, gender, and course allocation.</td>
+                    </tr>
+                    <tr>
+                        <td><strong style="color:var(--lime);">📋 Classroom Attendance</strong></td>
+                        <td>Daily date-based roll-calling with quick-fill toggles and cumulative student attendance tracking.</td>
+                    </tr>
+                    <tr>
+                        <td><strong style="color:var(--lime);">💰 Fee Management</strong></td>
+                        <td>Institutional balance tracking, partial payment receipts, and settlement logs.</td>
+                    </tr>
+                    <tr>
+                        <td><strong style="color:var(--lime);">📥 CSV Data Exports</strong></td>
+                        <td>One-click CSV exports for attendance records and fee accounting data.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+{% endblock %}

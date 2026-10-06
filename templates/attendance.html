@@ -1,0 +1,288 @@
+{% extends "base.html" %}
+
+{% block title %}Attendance Management | StudentHub{% endblock %}
+
+{% block content %}
+
+    <div class="page-header">
+        <div class="page-header-content">
+            <h1><span class="title-badge">📋</span> Classroom Attendance</h1>
+            <p>Track daily attendance roll calls, inspect trends, and export logs</p>
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <a class="btn btn-secondary btn-sm" href="/export/attendance.csv?date={{ selected_date }}">📥 Export {{ selected_date }}</a>
+            <a class="btn btn-secondary btn-sm" href="/export/attendance_summary.csv">📥 Export Summary</a>
+        </div>
+    </div>
+
+    <!-- Attendance Summary Charts -->
+    <section class="charts-grid" style="margin-bottom: 28px;">
+
+        <!-- Selected Date's Attendance Doughnut Chart -->
+        <div class="chart-card">
+            <h3><span class="chart-icon">📊</span> {{ "Today's" if selected_date == today else selected_date }} Attendance Roll</h3>
+            <div class="chart-container">
+                <canvas id="attendancePieChart"></canvas>
+                <div id="attendanceNoData" class="empty" style="display:none; padding: 40px 10px;">
+                    No attendance records for this date.
+                </div>
+            </div>
+        </div>
+
+        <!-- Overall Attendance Doughnut Chart -->
+        <div class="chart-card">
+            <h3><span class="chart-icon">📈</span> Overall Academic Attendance</h3>
+            <div class="chart-container">
+                <canvas id="overallAttendancePie"
+                    data-present="{{ summary | sum(attribute='present_days') }}"
+                    data-absent="{{ summary | sum(attribute='absent_days') }}"></canvas>
+                <div id="overallNoData" class="empty" style="display:none; padding: 40px 10px;">
+                    No cumulative attendance records yet.
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- Mark Attendance Panel -->
+    <div class="glass-panel">
+
+        <div class="panel-header">
+            <h2><span class="header-icon">✏️</span> Mark Attendance Sheet</h2>
+            <div style="display:flex; gap:8px;">
+                <button type="button" class="btn btn-secondary btn-sm" onclick="markAll('Present')">✅ All Present</button>
+                <button type="button" class="btn btn-ghost btn-sm" onclick="markAll('Absent')">❌ All Absent</button>
+            </div>
+        </div>
+
+        <form method="GET" action="/attendance" class="filters">
+            <label for="date" style="color:var(--text-muted); font-weight:700; font-size:12px; text-transform:uppercase; letter-spacing:1px;">Date:</label>
+            <input type="date" id="date" name="date" value="{{ selected_date }}" max="{{ today }}">
+            <button type="submit" class="btn btn-primary btn-sm">Load Sheet</button>
+        </form>
+
+        {% if already_marked %}
+        <p class="note">✅ Attendance has been recorded for this date. You can modify records and save again.</p>
+        {% else %}
+        <p class="note">ℹ️ No saved record for this date yet. All enrolled students default to Present.</p>
+        {% endif %}
+
+        <form method="POST" action="/attendance">
+
+            <input type="hidden" name="date" value="{{ selected_date }}">
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Student Name</th>
+                            <th>Program</th>
+                            <th>Roll Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for s in roster %}
+                        <tr>
+                            <td><strong style="color:var(--lime);">#{{ s.id }}</strong></td>
+                            <td><span style="font-weight:700; color:var(--text-white);">{{ s.name }}</span></td>
+                            <td>{{ s.course }}</td>
+                            <td class="radio-cell">
+                                <label>
+                                    <input type="radio" name="status_{{ s.id }}" value="Present"
+                                        {% if s.marked_status != 'Absent' %}checked{% endif %}>
+                                    <span style="color:var(--lime); font-weight:700;">Present</span>
+                                </label>
+                                <label>
+                                    <input type="radio" name="status_{{ s.id }}" value="Absent"
+                                        {% if s.marked_status == 'Absent' %}checked{% endif %}>
+                                    <span style="color:#f87171; font-weight:600;">Absent</span>
+                                </label>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="4" class="empty">No active students found in roster.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div style="display:flex; gap:14px; margin-top:20px; align-items:center; flex-wrap:wrap;">
+                <button type="submit" class="btn btn-primary">💾 Save Attendance Records</button>
+                <button type="button" class="btn btn-secondary" onclick="markAll('Present')">✅ Quick Set All Present</button>
+            </div>
+
+        </form>
+
+    </div>
+
+    <!-- Attendance Summary Table -->
+    <div class="glass-panel" style="margin-top: 28px;">
+
+        <div class="panel-header">
+            <h2><span class="header-icon">📊</span> Student Cumulative Attendance Summary</h2>
+            <a class="btn btn-secondary btn-sm" href="/export/attendance_summary.csv">📥 Export Summary CSV</a>
+        </div>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Student Name</th>
+                        <th>Program</th>
+                        <th>Present Days</th>
+                        <th>Absent Days</th>
+                        <th>Total Tracked</th>
+                        <th>Attendance %</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in summary %}
+                    <tr>
+                        <td><span style="font-weight:700; color:var(--text-white);">{{ r.name }}</span></td>
+                        <td>{{ r.course }}</td>
+                        <td style="color:var(--lime); font-weight:700;">{{ r.present_days }}</td>
+                        <td style="color:#f87171;">{{ r.absent_days }}</td>
+                        <td>{{ r.total_days }}</td>
+                        <td>
+                            {% if r.percentage is none %}
+                                <span style="color:var(--text-dim);">—</span>
+                            {% else %}
+                                <span class="badge {{ 'good' if r.percentage >= 75 else ('warn' if r.percentage >= 60 else 'bad') }}">
+                                    {{ r.percentage }}%
+                                </span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="6" class="empty">No attendance summary available.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    let dateChart = null;
+
+    const sharedOpts = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'bottom',
+                labels: {
+                    color: '#a1a1aa',
+                    font: { size: 12, family: 'Plus Jakarta Sans', weight: '600' },
+                    padding: 14,
+                    usePointStyle: true,
+                    pointStyleWidth: 10,
+                }
+            },
+            tooltip: {
+                backgroundColor: '#121216',
+                titleColor: '#ffffff',
+                bodyColor: '#b8f400',
+                borderColor: 'rgba(184, 244, 0, 0.3)',
+                borderWidth: 1,
+                cornerRadius: 8,
+                padding: 12,
+                titleFont: { weight: '700', family: 'Plus Jakarta Sans' },
+                bodyFont: { weight: '600', family: 'Plus Jakarta Sans' },
+            }
+        },
+        cutout: '68%',
+    };
+
+    function updateDateChart() {
+        const presentCount = document.querySelectorAll('input[type="radio"][value="Present"]:checked').length;
+        const absentCount = document.querySelectorAll('input[type="radio"][value="Absent"]:checked').length;
+        const canvas = document.getElementById('attendancePieChart');
+        const noData = document.getElementById('attendanceNoData');
+
+        if (presentCount + absentCount === 0) {
+            if (canvas) canvas.style.display = 'none';
+            if (noData) noData.style.display = 'block';
+            if (dateChart) {
+                dateChart.destroy();
+                dateChart = null;
+            }
+            return;
+        }
+
+        if (canvas) canvas.style.display = 'block';
+        if (noData) noData.style.display = 'none';
+
+        if (dateChart) {
+            dateChart.data.datasets[0].data = [presentCount, absentCount];
+            dateChart.update();
+        } else if (canvas) {
+            dateChart = new Chart(canvas, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Present', 'Absent'],
+                    datasets: [{
+                        data: [presentCount, absentCount],
+                        backgroundColor: ['rgba(184, 244, 0, 0.95)', 'rgba(239, 68, 68, 0.85)'],
+                        borderColor: '#131317',
+                        borderWidth: 3,
+                        hoverOffset: 6,
+                    }]
+                },
+                options: sharedOpts,
+            });
+        }
+    }
+
+    function markAll(value) {
+        document
+            .querySelectorAll('input[type="radio"][value="' + value + '"]')
+            .forEach(function (radio) { radio.checked = true; });
+        updateDateChart();
+    }
+
+    (function () {
+        // Attach change listener to all status radio buttons
+        document.querySelectorAll('input[type="radio"]').forEach(function (radio) {
+            radio.addEventListener('change', updateDateChart);
+        });
+
+        // Initialize date attendance chart
+        updateDateChart();
+
+        // ── Cumulative attendance (from summary) ──
+        const overallCanvas = document.getElementById('overallAttendancePie');
+        const overallNoData = document.getElementById('overallNoData');
+        const totalPresent = overallCanvas ? parseInt(overallCanvas.dataset.present || '0', 10) : 0;
+        const totalAbsent = overallCanvas ? parseInt(overallCanvas.dataset.absent || '0', 10) : 0;
+
+        if (totalPresent + totalAbsent > 0 && overallCanvas) {
+            new Chart(overallCanvas, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Present', 'Absent'],
+                    datasets: [{
+                        data: [totalPresent, totalAbsent],
+                        backgroundColor: ['rgba(184, 244, 0, 0.95)', 'rgba(239, 68, 68, 0.85)'],
+                        borderColor: '#131317',
+                        borderWidth: 3,
+                        hoverOffset: 6,
+                    }]
+                },
+                options: sharedOpts,
+            });
+        } else {
+            if (overallCanvas) overallCanvas.style.display = 'none';
+            if (overallNoData) overallNoData.style.display = 'block';
+        }
+    })();
+</script>
+{% endblock %}

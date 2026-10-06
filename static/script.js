@@ -1,4 +1,3 @@
-// ===== Session Reopen Guard =====
 (function () {
     const isAuth = document.body && document.body.getAttribute('data-authenticated') === 'true';
     if (isAuth && !sessionStorage.getItem('studenthub_session_active')) {
@@ -6,7 +5,6 @@
     }
 })();
 
-// ===== Sidebar: Hamburger Toggle =====
 (function () {
     const toggle = document.querySelector('.nav-toggle');
     const sidebar = document.querySelector('.sidebar');
@@ -19,7 +17,6 @@
             if (overlay) overlay.classList.toggle('show');
         });
 
-        // Close sidebar when overlay is clicked
         if (overlay) {
             overlay.addEventListener('click', function () {
                 toggle.classList.remove('open');
@@ -28,7 +25,6 @@
             });
         }
 
-        // Close sidebar when a nav link is clicked (mobile)
         sidebar.querySelectorAll('a').forEach(function (link) {
             link.addEventListener('click', function () {
                 toggle.classList.remove('open');
@@ -39,11 +35,9 @@
     }
 })();
 
-// ===== Active Link Highlight (Sidebar + Topbar) =====
 (function () {
     const path = window.location.pathname;
 
-    // Sidebar Links
     document.querySelectorAll('.sidebar-nav a').forEach(function (link) {
         const href = link.getAttribute('href');
         if (href === '/' && path === '/') {
@@ -53,7 +47,6 @@
         }
     });
 
-    // Topbar Links
     document.querySelectorAll('.topbar-nav a').forEach(function (link) {
         const href = link.getAttribute('href');
         if (href === '/' && path === '/') {
@@ -66,7 +59,6 @@
     });
 })();
 
-// ===== Welcome Button (Dashboard) =====
 (function () {
     const welcomeButton = document.getElementById('welcomeButton');
     if (welcomeButton) {
@@ -76,7 +68,6 @@
     }
 })();
 
-// ===== Animate numbers (count up) =====
 function animateCountUp(element, target, duration) {
     if (!element) return;
     const start = 0;
@@ -88,7 +79,6 @@ function animateCountUp(element, target, duration) {
     function update(currentTime) {
         const elapsed = currentTime - startTime;
         const progress = Math.min(elapsed / duration, 1);
-        // ease-out cubic
         const ease = 1 - Math.pow(1 - progress, 3);
         const current = start + (target - start) * ease;
 
@@ -106,7 +96,6 @@ function animateCountUp(element, target, duration) {
     requestAnimationFrame(update);
 }
 
-// Auto-trigger count-up for elements with [data-countup]
 document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('[data-countup]').forEach(function (el) {
         const target = parseFloat(el.dataset.countup);
@@ -116,7 +105,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-// Clear active session flag from browser storage on Sign Out
 document.addEventListener('click', function (e) {
     const link = e.target.closest('a[href="/logout"]');
     if (link) {

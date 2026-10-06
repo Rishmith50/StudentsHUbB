@@ -1,14 +1,7 @@
-/* ═════════════════════════════════════════════════════════════════════
-   STUDENTHUB — E-COMMERCE BANNER TEMPLATE THEME (DARK & NEON LIME)
-   Inspired by: High-contrast Dark Crumpled Texture + Electric Lime (#b8f400)
-   ═════════════════════════════════════════════════════════════════════ */
-
-/* ===== Google Fonts Import ===== */
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;700&display=swap');
 
-/* ===== CSS Custom Properties ===== */
 :root {
-    /* Brand Accent: Electric Lime */
+    
     --lime: #b8f400;
     --lime-hover: #c6f806;
     --lime-dim: #9ed600;
@@ -17,7 +10,7 @@
     --lime-subtle: rgba(184, 244, 0, 0.12);
     --lime-border: rgba(184, 244, 0, 0.3);
 
-    /* Core Status Colors */
+    
     --primary: #b8f400;
     --primary-dark: #000000;
     --accent: #b8f400;
@@ -30,7 +23,7 @@
     --info: #38bdf8;
     --info-bg: rgba(56, 189, 248, 0.15);
 
-    /* Backgrounds: Matte Dark & Deep Charcoal */
+    
     --bg-dark: #0c0c0e;
     --bg-card: #131317;
     --bg-card-glass: rgba(19, 19, 23, 0.88);
@@ -40,27 +33,27 @@
     --bg-topbar: rgba(14, 14, 17, 0.92);
     --body-bg: #09090b;
 
-    /* Text Colors */
+    
     --text: #e4e4e7;
     --text-white: #ffffff;
     --text-bright: #fafafa;
     --text-muted: #a1a1aa;
     --text-dim: #71717a;
 
-    /* Borders */
+    
     --border: rgba(255, 255, 255, 0.08);
     --border-card: rgba(255, 255, 255, 0.09);
     --border-hover: rgba(184, 244, 0, 0.35);
     --border-subtle: #24242b;
 
-    /* Shadows & Glows */
+    
     --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.35);
     --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.45);
     --shadow-lg: 0 16px 50px rgba(0, 0, 0, 0.6);
     --shadow-lime: 0 6px 25px rgba(184, 244, 0, 0.28);
     --shadow-lime-sm: 0 3px 12px rgba(184, 244, 0, 0.2);
 
-    /* Dimensions & Geometry */
+    
     --sidebar-width: 250px;
     --topbar-height: 70px;
     --radius-xs: 4px;
@@ -71,7 +64,6 @@
     --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* ===== Reset & Base ===== */
 *,
 *::before,
 *::after {
@@ -95,7 +87,6 @@ body {
     overflow-x: hidden;
 }
 
-/* Layered Crumpled / Charcoal Dark Atmosphere */
 body::before {
     content: '';
     position: fixed;
@@ -109,7 +100,6 @@ body::before {
     z-index: 0;
 }
 
-/* ===== Ambient Outline Typography Watermarks ===== */
 .watermark-outline {
     font-family: 'Plus Jakarta Sans', sans-serif;
     font-size: 52px;
@@ -152,12 +142,10 @@ body::before {
     -webkit-text-stroke: 1px rgba(255, 255, 255, 0.06);
 }
 
-/* Subtle lime variant for watermark */
 .watermark-stack.lime-tint span {
     -webkit-text-stroke: 1px rgba(184, 244, 0, 0.07);
 }
 
-/* ===== Keyframe Animations ===== */
 @keyframes fadeSlideUp {
     from { opacity: 0; transform: translateY(20px); }
     to   { opacity: 1; transform: translateY(0); }
@@ -183,20 +171,12 @@ body::before {
     50% { opacity: 1; transform: scale(1.05); }
 }
 
-/* ═══════════════════════════════════════
-   LAYOUT ARCHITECTURE
-   ═══════════════════════════════════════ */
-
 .app-layout {
     display: flex;
     min-height: 100vh;
     position: relative;
     z-index: 1;
 }
-
-/* ═══════════════════════════════════════
-   SIDEBAR (DARK TEXTURED WITH LIME ACCENTS)
-   ═══════════════════════════════════════ */
 
 .sidebar {
     position: fixed;
@@ -219,7 +199,6 @@ body::before {
     border-bottom: 1px solid var(--border);
 }
 
-/* Exact Brand Logo styling like BUY.IT */
 .sidebar-logo {
     display: flex;
     align-items: center;
@@ -268,7 +247,6 @@ body::before {
     font-weight: 900;
 }
 
-/* Sidebar Nav */
 .sidebar-nav {
     padding: 20px 14px;
     flex: 1;
@@ -313,7 +291,6 @@ body::before {
     transform: scale(1.15);
 }
 
-/* Active Nav State with Lime Accent */
 .sidebar-nav a.active {
     color: #000000;
     background: var(--lime);
@@ -353,10 +330,6 @@ body::before {
     box-shadow: 0 0 8px var(--lime);
 }
 
-/* ═══════════════════════════════════════
-   MAIN CONTENT AREA & TOPBAR
-   ═══════════════════════════════════════ */
-
 .main-content {
     flex: 1;
     margin-left: var(--sidebar-width);
@@ -365,7 +338,6 @@ body::before {
     flex-direction: column;
 }
 
-/* Topbar Header (Persistent across all pages) */
 .app-topbar {
     height: var(--topbar-height);
     background: var(--bg-topbar);
@@ -399,7 +371,6 @@ body::before {
     color: var(--lime);
 }
 
-/* Topbar Quick Navigation Links */
 .topbar-nav {
     display: flex;
     align-items: center;
@@ -425,7 +396,6 @@ body::before {
     gap: 14px;
 }
 
-/* Sleek Dark Action Button like the Sign In button in template */
 .btn-nav-action {
     display: inline-flex;
     align-items: center;
@@ -449,7 +419,6 @@ body::before {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
 }
 
-/* Container */
 .container {
     width: 100%;
     max-width: 1280px;
@@ -459,7 +428,6 @@ body::before {
     animation: fadeSlideUp 0.45s cubic-bezier(0.2, 0.9, 0.3, 1) both;
 }
 
-/* Page Header */
 .page-header {
     display: flex;
     align-items: flex-start;
@@ -488,10 +456,6 @@ body::before {
     margin-top: 4px;
 }
 
-/* ═══════════════════════════════════════
-   HERO BANNER COMPONENT (MATCHING TEMPLATE IMAGE)
-   ═══════════════════════════════════════ */
-
 .banner-hero-container {
     background: #111114;
     border: 1px solid rgba(255, 255, 255, 0.08);
@@ -507,7 +471,6 @@ body::before {
     align-items: center;
 }
 
-/* Dark textured background overlay on banner */
 .banner-hero-container::before {
     content: '';
     position: absolute;
@@ -520,7 +483,6 @@ body::before {
     z-index: 1;
 }
 
-/* Left: Photo Showcase with Circular Rotating Badge */
 .hero-photo-wrapper {
     position: relative;
     z-index: 2;
@@ -550,7 +512,6 @@ body::before {
     transform: scale(1.02);
 }
 
-/* Translucent Dark Caption at bottom of photo */
 .hero-photo-caption {
     position: absolute;
     bottom: 0;
@@ -568,7 +529,6 @@ body::before {
     color: var(--text-muted);
 }
 
-/* Circular Rotating Text Badge (Overlapping top-right) */
 .rotating-badge-wrapper {
     position: absolute;
     top: -20px;
@@ -602,7 +562,6 @@ body::before {
     box-shadow: 0 0 14px var(--lime);
 }
 
-/* Right: Hero Text & CTA */
 .hero-text-content {
     position: relative;
     z-index: 2;
@@ -658,10 +617,6 @@ body::before {
     flex-wrap: wrap;
 }
 
-/* ═══════════════════════════════════════
-   BUTTONS (NEON LIME + MATTE DARK)
-   ═══════════════════════════════════════ */
-
 .btn {
     display: inline-flex;
     align-items: center;
@@ -678,7 +633,6 @@ body::before {
     line-height: 1;
 }
 
-/* Vibrant Solid Neon Lime CTA (Like 'Browse Product') */
 .btn-primary,
 .btn-hero,
 .btn-lime-primary {
@@ -703,7 +657,6 @@ body::before {
     transform: translateY(0);
 }
 
-/* Sleek Matte Dark Secondary Button */
 .btn-secondary,
 .btn-dark-secondary {
     background: #18181d;
@@ -719,7 +672,6 @@ body::before {
     transform: translateY(-2px);
 }
 
-/* Success Button (Lime tinted) */
 .btn-success {
     background: var(--lime);
     color: #000000;
@@ -732,7 +684,6 @@ body::before {
     transform: translateY(-2px);
 }
 
-/* Danger Button */
 .btn-danger {
     background: #dc2626;
     color: #ffffff;
@@ -744,7 +695,6 @@ body::before {
     transform: translateY(-2px);
 }
 
-/* Ghost Button */
 .btn-ghost {
     background: transparent;
     color: var(--text-muted);
@@ -757,7 +707,6 @@ body::before {
     border-color: rgba(255, 255, 255, 0.2);
 }
 
-/* Sizes */
 .btn-sm {
     padding: 8px 16px;
     font-size: 12.5px;
@@ -769,10 +718,6 @@ body::before {
     font-size: 15px;
     border-radius: var(--radius-sm);
 }
-
-/* ═══════════════════════════════════════
-   STAT CARDS (SLEEK DARK SURFACES + LIME DIGITS)
-   ═══════════════════════════════════════ */
 
 .stat-cards {
     display: grid;
@@ -867,10 +812,6 @@ body::before {
     letter-spacing: 1px;
 }
 
-/* ═══════════════════════════════════════
-   CHARTS GRID & CARDS
-   ═══════════════════════════════════════ */
-
 .charts-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -915,10 +856,6 @@ body::before {
     justify-content: center;
 }
 
-/* ═══════════════════════════════════════
-   GLASS PANEL & TABLES
-   ═══════════════════════════════════════ */
-
 .glass-panel {
     background: var(--bg-card);
     border: 1px solid var(--border-card);
@@ -952,7 +889,6 @@ body::before {
     font-size: 20px;
 }
 
-/* Table Design */
 .table-wrap {
     width: 100%;
     overflow-x: auto;
@@ -1007,10 +943,6 @@ tbody td.empty {
     font-size: 14px;
 }
 
-/* ═══════════════════════════════════════
-   STATUS BADGES (NEON LIME PILL BADGES)
-   ═══════════════════════════════════════ */
-
 .badge {
     display: inline-flex;
     align-items: center;
@@ -1031,7 +963,6 @@ tbody td.empty {
     border-radius: 50%;
 }
 
-/* Active Badge - Vibrant Neon Lime */
 .badge.active-badge,
 .badge.paid,
 .badge.good,
@@ -1049,7 +980,6 @@ tbody td.empty {
     box-shadow: 0 0 8px var(--lime);
 }
 
-/* Inactive Badge - Sleek Red/Charcoal */
 .badge.inactive-badge,
 .badge.absent,
 .badge.bad,
@@ -1066,7 +996,6 @@ tbody td.empty {
     background: #ef4444;
 }
 
-/* Warning Badge - Amber */
 .badge.partial,
 .badge.warn,
 .badge.pending,
@@ -1082,10 +1011,6 @@ tbody td.empty {
 .badge-warning::before {
     background: #f59e0b;
 }
-
-/* ═══════════════════════════════════════
-   FORMS, FILTERS & INPUTS
-   ═══════════════════════════════════════ */
 
 .filters {
     display: flex;
@@ -1119,7 +1044,6 @@ tbody td.empty {
     background: #1c1c24;
 }
 
-/* Form Grid */
 .form-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -1164,7 +1088,6 @@ tbody td.empty {
     background: #1d1d25;
 }
 
-/* Radio & Checkbox Toggles */
 .radio-cell {
     display: flex;
     align-items: center;
@@ -1188,7 +1111,6 @@ tbody td.empty {
     height: 16px;
 }
 
-/* Pay Form in Fees Table */
 .pay-form {
     display: flex;
     align-items: center;
@@ -1227,10 +1149,6 @@ tbody td.empty {
     transform: translateY(-1px);
 }
 
-/* ═══════════════════════════════════════
-   FLASH MESSAGES & ALERTS
-   ═══════════════════════════════════════ */
-
 .flash {
     padding: 14px 20px;
     border-radius: var(--radius-sm);
@@ -1266,10 +1184,6 @@ tbody td.empty {
     border-left: 3px solid var(--lime);
 }
 
-/* ═══════════════════════════════════════
-   FOOTER
-   ═══════════════════════════════════════ */
-
 footer {
     padding: 24px 36px;
     border-top: 1px solid var(--border);
@@ -1285,10 +1199,6 @@ footer a {
     color: var(--lime);
     text-decoration: none;
 }
-
-/* ═══════════════════════════════════════
-   MOBILE RESPONSIVENESS & HAMBURGER
-   ═══════════════════════════════════════ */
 
 .mobile-header {
     display: none;
@@ -1410,11 +1320,6 @@ footer a {
     }
 }
 
-
-/* ═══════════════════════════════════════
-   LOGIN PAGE & AUTHENTICATION STYLING
-   ═══════════════════════════════════════ */
-
 .login-page-wrap {
     min-height: 100vh;
     display: flex;
@@ -1519,8 +1424,6 @@ footer a {
     color: var(--lime);
 }
 
-
-/* User profile pill in topbar */
 .user-profile-pill {
     display: inline-flex;
     align-items: center;

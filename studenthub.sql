@@ -1,5 +1,3 @@
-
-
 CREATE DATABASE IF NOT EXISTS `studenthub` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
 USE `studenthub`;
 
@@ -13,7 +11,6 @@ DROP TABLE IF EXISTS `users`;
 
 SET FOREIGN_KEY_CHECKS = 1;
 
--- Table structure for table `users`
 CREATE TABLE `users` (
   `id` int NOT NULL AUTO_INCREMENT,
   `username` varchar(50) NOT NULL,
@@ -25,7 +22,6 @@ CREATE TABLE `users` (
   UNIQUE KEY `username` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Table structure for table `courses`
 CREATE TABLE `courses` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
@@ -33,7 +29,6 @@ CREATE TABLE `courses` (
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Table structure for table `students`
 CREATE TABLE `students` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
@@ -50,7 +45,6 @@ CREATE TABLE `students` (
   CONSTRAINT `fk_student_course` FOREIGN KEY (`course_id`) REFERENCES `courses` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Table structure for table `attendance`
 CREATE TABLE `attendance` (
   `id` int NOT NULL AUTO_INCREMENT,
   `student_id` int NOT NULL,
@@ -61,7 +55,6 @@ CREATE TABLE `attendance` (
   CONSTRAINT `fk_attendance_student` FOREIGN KEY (`student_id`) REFERENCES `students` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Table structure for table `fees`
 CREATE TABLE `fees` (
   `id` int NOT NULL AUTO_INCREMENT,
   `student_id` int NOT NULL,
@@ -73,13 +66,15 @@ CREATE TABLE `fees` (
   CONSTRAINT `fk_fees_student` FOREIGN KEY (`student_id`) REFERENCES `students` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+<<<<<<< HEAD
 
 
 -- Dumping data for table `users`
+=======
+>>>>>>> 037903a (Remove comments across all codebase files)
 INSERT INTO `users` (`id`, `username`, `email`, `password_hash`, `role`, `created_at`) VALUES
 (1, 'admin', 'admin@studenthub.local', 'scrypt:32768:8:1$q1paDQrywBoqVp9f$43fda6e57ec3bd4f6c8a04092b5b79240ad913262eea69b044e7bbeadaddaf77e103cc51ac51134fa7fe5b353bf00499058d7d6c285e4a73f2294bf7202efc01', 'admin', '2026-10-05 22:08:21');
 
--- Dumping data for table `courses`
 INSERT INTO `courses` (`id`, `name`) VALUES
 (5, 'BBA'),
 (1, 'BCA'),
@@ -88,7 +83,6 @@ INSERT INTO `courses` (`id`, `name`) VALUES
 (3, 'MCA'),
 (6, 'MCom');
 
--- Dumping data for table `students`
 INSERT INTO `students` (`id`, `name`, `email`, `phone`, `gender`, `course_id`, `date_of_birth`, `enrollment_date`, `status`) VALUES
 (1, 'Rahul Sharma', 'rahul@example.com', '9876543210', 'Male', 1, '2002-04-12', '2025-06-15', 'Inactive'),
 (2, 'Ayesha Khan', 'ayesha@example.com', '9123456789', 'Female', 2, '2003-08-21', '2025-06-18', 'Active'),
@@ -101,7 +95,6 @@ INSERT INTO `students` (`id`, `name`, `email`, `phone`, `gender`, `course_id`, `
 (17, 'Neha Kapoor', 'neha@example.com', '9111122222', 'Female', 1, '2003-02-10', '2026-10-05', 'Active'),
 (18, 'Rishmith', 'rishmith123@gmail.com', '8452857190', 'Male', 4, '2006-11-20', '2026-10-05', 'Active');
 
--- Dumping data for table `attendance`
 INSERT INTO `attendance` (`id`, `student_id`, `attendance_date`, `status`) VALUES
 (1, 2, '2026-10-04', 'Present'),
 (2, 3, '2026-10-04', 'Present'),
@@ -125,7 +118,6 @@ INSERT INTO `attendance` (`id`, `student_id`, `attendance_date`, `status`) VALUE
 (27, 17, '2026-10-05', 'Present'),
 (28, 18, '2026-10-05', 'Present');
 
--- Dumping data for table `fees`
 INSERT INTO `fees` (`id`, `student_id`, `total_fee`, `amount_paid`, `last_payment_date`) VALUES
 (1, 1, '50000.00', '50000.00', '2026-10-05'),
 (2, 3, '50000.00', '50000.00', '2026-10-05'),

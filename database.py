@@ -11,7 +11,6 @@ def get_db_connection():
     )
 
 
-# Test: run "python database.py". You can delete this part afterwards.
 if __name__ == "__main__":
     connection = get_db_connection()
     cursor = connection.cursor()

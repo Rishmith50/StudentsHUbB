@@ -100,7 +100,6 @@ def home():
     )
     recent_students = cursor.fetchall()
 
-    # --- Chart data: students per course ---
     cursor.execute(
         """
         SELECT courses.name AS course_name, COUNT(students.id) AS count
@@ -114,7 +113,6 @@ def home():
     course_labels = [r["course_name"] for r in course_distribution]
     course_counts = [int(r["count"]) for r in course_distribution]
 
-    # --- Chart data: gender distribution ---
     cursor.execute(
         """
         SELECT gender, COUNT(*) AS count
@@ -288,7 +286,6 @@ def attendance():
     today = datetime.date.today().isoformat()
     selected_date = request.args.get("date") or request.form.get("date") or today
 
-    # Validate date format (YYYY-MM-DD)
     try:
         datetime.date.fromisoformat(selected_date)
     except ValueError:
@@ -298,14 +295,12 @@ def attendance():
     cursor = connection.cursor(dictionary=True)
 
     if request.method == "POST":
-        # Check active students to save attendance for
         cursor.execute("SELECT id FROM students WHERE status = 'Active'")
         active_students = cursor.fetchall()
 
         try:
             for s in active_students:
                 student_id = s["id"]
-                # Default status to Present if not marked Absent
                 status_val = request.form.get(f"status_{student_id}", "Present")
                 if status_val not in ("Present", "Absent"):
                     status_val = "Present"
@@ -329,15 +324,12 @@ def attendance():
         connection.close()
         return redirect(url_for("attendance", date=selected_date))
 
-    # GET Request:
-    # 1. Check if attendance already marked for selected_date
     cursor.execute(
         "SELECT COUNT(*) AS cnt FROM attendance WHERE attendance_date = %s",
         (selected_date,),
     )
     already_marked = cursor.fetchone()["cnt"] > 0
 
-    # 2. Fetch active students roster with their attendance status for selected_date
     cursor.execute(
         """
         SELECT
@@ -358,7 +350,6 @@ def attendance():
     )
     roster = cursor.fetchall()
 
-    # 3. Fetch attendance summary for all students
     cursor.execute(
         """
         SELECT

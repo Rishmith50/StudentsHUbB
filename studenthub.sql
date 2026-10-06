@@ -1,7 +1,4 @@
--- ========================================================
--- StudentHub Database Schema and Initial Data
--- Database: studenthub
--- ========================================================
+
 
 CREATE DATABASE IF NOT EXISTS `studenthub` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
 USE `studenthub`;
@@ -76,9 +73,7 @@ CREATE TABLE `fees` (
   CONSTRAINT `fk_fees_student` FOREIGN KEY (`student_id`) REFERENCES `students` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- --------------------------------------------------------
--- Data for tables
--- --------------------------------------------------------
+
 
 -- Dumping data for table `users`
 INSERT INTO `users` (`id`, `username`, `email`, `password_hash`, `role`, `created_at`) VALUES
